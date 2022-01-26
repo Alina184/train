@@ -41,3 +41,22 @@ def occupation_type_apply(occupation_type):
         return 1
 df['occupation_type'] = df['occupation_type'].apply(occupation_type_apply)
 df.info()
+
+from sklearn.model_selection import train_test_split 
+from sklearn.preprocessing import StandardScaler
+from sklearn.neighbors import KNeighborsClassifier 
+from sklearn.metrics import confusion_matrix, accuracy_score 
+
+X = df.drop('result', axis = 1)
+y = df['result']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.25)
+
+sc = StandardScaler()
+X_train = sc.fit_transform(X_train)
+X_test = sc.transform(X_test)
+
+classifier = KNeighborsClassifier(n_neighbors = 5)
+classifier.fit(X_train, y_train)
+
+y_pred = classifier.predict(X_test)
+print('Процент исходов, которые предсказали правильно', round(accuracy_score(y_test, y_pred), 2) * 100)
